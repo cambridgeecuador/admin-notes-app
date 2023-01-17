@@ -20,8 +20,8 @@ export async function deleteStudent(id:string, accessToken: string, onSuccess: a
   const fetchConfig = {
     headers: {
       Authorization: `Bearer ${accessToken}`,
-      method: 'DELETE',
-    }
+    },
+    method: 'DELETE',
   }
   const response = await fetch(urlAPI, fetchConfig)
 
@@ -32,8 +32,6 @@ export async function deleteStudent(id:string, accessToken: string, onSuccess: a
     return {error: data.error}
   }
 
-  console.log('data', data);
-  
   onSuccess()
   
   return {data}

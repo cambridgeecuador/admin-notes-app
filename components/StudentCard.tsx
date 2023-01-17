@@ -49,23 +49,19 @@ export default function StudentCard(userData: any) {
     const res = await updateStudent(changes, user._id, accessToken, notifySuccess, notifyError)
     const pdfRes = await updatePDF(user.pdf, user.idNumber, accessToken, notifySuccess, notifyError)
 
+    if (JSON.stringify(changes) !== JSON.stringify(initDetails)) {
+      console.log("Changes");
+      
+      updateGrades(user.idNumber, accessToken, notifySuccess, notifyError)
+    }
+
     if (user.status === initStatus) {
       return;
     }
 
     if (user.status === 'ACCEPTED') {
       aproveUser(user.idNumber, accessToken, notifySuccess, notifyError)
-    }
-
-    if (JSON.stringify(user.details) !== JSON.stringify(initDetails)) {
-      updateGrades(user.idNumber, accessToken, notifySuccess, notifyError)
-    }
-  }
-
-  const handleDelete = async (e: any) => {
-    e.preventDefault();
-
-    const res = await deleteStudent(user._id, accessToken, notifySuccess, notifyError)
+    } 
   }
 
   const handleChange = (e: any) => {
@@ -73,6 +69,11 @@ export default function StudentCard(userData: any) {
 
     setUser((prev: { details: any; }) => ({ ...prev, details: { ...prev.details, [name]: value } }))
     setChanges((prev: any) => ({ ...prev, details: { ...prev.details, [name]: value } }))
+  }
+  const handleDelete = async (e: any) => {
+    e.preventDefault();
+
+    const res = await deleteStudent(user._id, accessToken, notifySuccess, notifyError)
   }
 
   const setStatus = (e: any) => {
