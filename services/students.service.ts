@@ -15,7 +15,7 @@ export async function getStudents(accessToken: string) {
   return data
 }
 
-export async function deleteStudent(accessToken: string, id:string) {
+export async function deleteStudent(id:string, accessToken: string, onSuccess: any, onError: any) {
   const urlAPI = `${config.apiURL}/users/${id}`;
   const fetchConfig = {
     headers: {
@@ -27,7 +27,16 @@ export async function deleteStudent(accessToken: string, id:string) {
 
   const data = await response.json()
 
-  return data
+  if(data.error){
+    onError()
+    return {error: data.error}
+  }
+
+  console.log('data', data);
+  
+  onSuccess()
+  
+  return {data}
 }
 
 export async function updateStudent(changes: any, id: any, accessToken: any, onSuccess: any, onError: any) {
