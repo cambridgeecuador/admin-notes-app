@@ -15,6 +15,21 @@ export async function getStudents(accessToken: string) {
   return data
 }
 
+export async function deleteStudent(accessToken: string, id:string) {
+  const urlAPI = `${config.apiURL}/users/${id}`;
+  const fetchConfig = {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      method: 'DELETE',
+    }
+  }
+  const response = await fetch(urlAPI, fetchConfig)
+
+  const data = await response.json()
+
+  return data
+}
+
 export async function updateStudent(changes: any, id: any, accessToken: any, onSuccess: any, onError: any) {
   const urlAPI = `${config.apiURL}/users/${id}`;
   
@@ -40,6 +55,8 @@ export async function updateStudent(changes: any, id: any, accessToken: any, onS
   onSuccess()
   return {data}
 }
+
+
 
 export async function updatePDF(pdf:any, idNumber:any, accessToken:any, onSuccess: any, onError: any) {
   const urlAPI = `${config.apiURL}/files/upload`;
@@ -98,6 +115,27 @@ export const getPDF = async (idNumber: string, accessToken: string) => {
 
 export const aproveUser = async (idNumber: string, accessToken:string, onSuccess: any, onError: any) => {
   const urlAPI = `${config.apiURL}/email/aprove-user?idNumber=${idNumber}`;
+  const fetchConfig = {
+    headers: {
+      Authorization: `Bearer ${accessToken}`
+    },
+  }
+
+  const res = await fetch(urlAPI, fetchConfig) as any
+  const data = await res.json()
+  
+  if(data.error){
+    onError()
+    return {error: data.error}
+  }
+
+  onSuccess()
+  return {data}
+}
+
+
+export const updateGrades = async (idNumber: string, accessToken:string, onSuccess: any, onError: any) => {
+  const urlAPI = `${config.apiURL}/email/update-grades?idNumber=${idNumber}`;
   const fetchConfig = {
     headers: {
       Authorization: `Bearer ${accessToken}`

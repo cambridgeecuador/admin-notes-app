@@ -4,7 +4,7 @@ import { ToastContainer, toast } from 'react-toastify';
 
 import StudentInformation from './StudentInformation'
 import StudentDetails from './StudentDetails'
-import { updateStudent, updatePDF, getPDF, aproveUser } from '../services/students.service'
+import { updateStudent, updatePDF, getPDF, aproveUser, updateGrades } from '../services/students.service'
 import styles from './styles/Students.module.css'
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -13,6 +13,7 @@ export default function StudentCard(userData: any) {
 
   const [user, setUser] = React.useState({ ...userData.userData });
   const [initStatus] = React.useState(user.status);
+  const [initDetails] = React.useState({ ...user.details });
 
   const [changes, setChanges] = React.useState({});
 
@@ -55,6 +56,16 @@ export default function StudentCard(userData: any) {
     if (user.status === 'ACCEPTED') {
       aproveUser(user.idNumber, accessToken, notifySuccess, notifyError)
     }
+
+    if (JSON.stringify(user.details) !== JSON.stringify(initDetails)) {
+      updateGrades(user.idNumber, accessToken, notifySuccess, notifyError)
+    }
+  }
+
+  const handleDelete = async (e: any) => {
+    e.preventDefault();
+
+    const res = await updateStudent(changes, user._id, accessToken, notifySuccess, notifyError)
   }
 
   const handleChange = (e: any) => {
@@ -98,6 +109,7 @@ export default function StudentCard(userData: any) {
           <StudentDetails details={user.details} handleChange={handleChange} handleFile={handleFile} handleDownloadPDF={handleDownloadPDF} />
         </div>
         <button className={styles.button} onClick={handleSave}>Save</button>
+        <button className={styles.button} onClick={handleDelete}>Delete</button>
       </div>
       <ToastContainer
         position="bottom-center"

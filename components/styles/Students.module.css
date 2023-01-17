@@ -70,6 +70,10 @@
   transition-property: color, background-color, border-color;
 }
 
+.bg-red {
+  background-color: #f44336;
+}
+
 .bg-gray {
   background-color: gray;
   margin-bottom: 20px;
