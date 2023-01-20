@@ -12,10 +12,10 @@ export default function StudentCard(userData: any) {
   const { data: { user: { accessToken } } } = useSession({ required: true }) as any;
 
   const [user, setUser] = React.useState({ ...userData.userData });
-  const [initStatus] = React.useState(user.status);
-  const [initDetails] = React.useState({ ...user.details });
+  const [initStatus, setInitStatus] = React.useState(user.status);
+  const [initDetails, setInitDetails] = React.useState({ ...user.details });
 
-  const [changes, setChanges] = React.useState({});
+  const [changes, setChanges] = React.useState<any>({});
 
   const notifySuccess = () => {
     toast.success('Successfully', {
@@ -49,19 +49,21 @@ export default function StudentCard(userData: any) {
     const res = await updateStudent(changes, user._id, accessToken, notifySuccess, notifyError)
     const pdfRes = await updatePDF(user.pdf, user.idNumber, accessToken, notifySuccess, notifyError)
 
-    if (JSON.stringify(changes) !== JSON.stringify(initDetails)) {
-      console.log("Changes");
-      
+    if (user.status !== initStatus) {
+      if (user.status === 'ACCEPTED') {
+        aproveUser(user.idNumber, accessToken, notifySuccess, notifyError)
+      }
+      return setInitStatus(user.status)
+    }
+    
+    console.log('changes', changes);
+    console.log('initDetails', initDetails);
+    
+    if (JSON.stringify(changes.details) !== JSON.stringify(initDetails)) {
       updateGrades(user.idNumber, accessToken, notifySuccess, notifyError)
+      setInitDetails({ ...user.details })
+      setInitStatus(user.status)
     }
-
-    if (user.status === initStatus) {
-      return;
-    }
-
-    if (user.status === 'ACCEPTED') {
-      aproveUser(user.idNumber, accessToken, notifySuccess, notifyError)
-    } 
   }
 
   const handleChange = (e: any) => {
